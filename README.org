@@ -1,0 +1,56 @@
+#+TITLE: Python: Парсинг HTML с помощью XPath и ElementTree
+
+** Введение
+
+HTML есть подмножество XML. В Python много библиотек для парсинга
+XML. [[https://docs.python.org/3/library/xml.etree.elementtree.html][xml.etree.ElementTree]] хорош тем, что входит в состав стандартной
+библиотеки Python 2 и 3, и поддерживает несложные запросы.
+
+Документация предупреждает нас о том, что код ElementTree подвержен
+уязвимости. Речь идет о том, что злоумышленник может сформировать XML
+код таким образом, что парсер сломается. При парсинге HTML страниц
+вероятность такой ситуации не рассматриваем.
+
+В моем случае запросы примитивные, а входные данные относительно
+надежные, поэтому ElementTree -- оптимальный выбор.
+
+** Парсинг HTML
+
+Загрузим страницу из файла:
+
+#+BEGIN_SRC python
+import xml.etree.ElementTree as ET
+tree = ET.parse('page.html')
+root = tree.getroot()
+#+END_SRC
+
+** XPath
+
+Список корневых элементов можно получить так:
+
+#+BEGIN_SRC python
+root.findall("*")
+#+END_SRC
+
+Для поиска вхождений h1 в моем случае (в общем случае код между { и }
+может отличаться):
+
+#+BEGIN_SRC python
+elem = root.findall(".//{http://www.w3.org/1999/xhtml}h1")
+#+END_SRC
+
+Полный список поддерживаемого подмножества XPath [[https://docs.python.org/3/library/xml.etree.elementtree.html][в документации]].
+
+** Работа с содержимым
+
+Получить текст элемента:
+
+#+BEGIN_SRC python
+elem.text
+#+END_SRC
+
+Получить атрибут элемента:
+
+#+BEGIN_SRC python
+elem.get("attribute_name")
+#+END_SRC
